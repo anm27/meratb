@@ -18,6 +18,11 @@ import {
   ComboboxOption,
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 
 const SubmitDetails = () => {
   const places = useMapsLibrary("places");
@@ -26,29 +31,38 @@ const SubmitDetails = () => {
   const [selectedDrop, setSelectedDrop] = useState(null);
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropLocation, setDropLocation] = useState("");
-  // const [time, setTime] = useState('');
-  const [timeSlot, setTimeSlot] = useState("Want to travel right now!");
+  const [phone, setPhone] = useState("");
+  const [timeSlot, setTimeSlot] = useState(""); // Use as a string for both time slots and dates
   const [message, setMessage] = useState("");
 
   const handleSubmitDetails = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
+
+    if (!timeSlot || !phone) {
+      setMessage(
+        "❗Please select a time slot or a date. Pick-up, drop location, phone number is also mandatory."
+      );
+      return;
+    }
+
     try {
       console.log("Submitting travel details:", {
         pickupLocation,
         dropLocation,
         timeSlot,
+        phone,
         token,
       });
       const res = await axios.post(
         `${process.env.REACT_APP_SERVER_URI}/travel/submitDetails`,
-        { pickupLocation, dropLocation, timeSlot },
+        { pickupLocation, dropLocation, timeSlot, phone },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       console.log("Response from server:", res.data);
-      setMessage("Travel details submitted successfully!");
+      setMessage("💯Travel details submitted successfully!✔️");
     } catch (err) {
       console.error(
         "Error submitting travel details:",
@@ -56,6 +70,19 @@ const SubmitDetails = () => {
       );
       setMessage("Error submitting travel details. Please try again.");
     }
+  };
+
+  const handleDateChange = (date) => {
+    if (date) {
+      // Format the date as a string (e.g., "yyyy-MM-dd") to ensure valid parsing
+      const formattedDate = date.toISOString().split("T")[0]; // Use ISO format for consistent date handling
+      setTimeSlot(formattedDate);
+    }
+  };
+
+  const isDate = (str) => {
+    // Check if the string is in a date format
+    return !isNaN(Date.parse(str));
   };
 
   const PlacesAutoComplete = ({ setSelected, setLocation }) => {
@@ -88,11 +115,7 @@ const SubmitDetails = () => {
           placeholder="Enter location"
         />
         <ComboboxPopover className="z-20">
-          {" "}
-          {/* Add z-index here */}
           <ComboboxList className="bg-white text-black border border-gray-300 shadow-lg">
-            {" "}
-            {/* Style the list */}
             {status === "OK" &&
               data.map(({ place_id, description }) => (
                 <ComboboxOption key={place_id} value={description} />
@@ -105,14 +128,30 @@ const SubmitDetails = () => {
 
   const timeSlots = [
     "Want to travel right now!",
-    "10:00am - 11:00am",
-    "11:00am - 12:00pm",
-    "12:00pm - 1:00pm",
-    "1:00pm - 2:00pm",
-    "2:00pm - 3:00pm",
-    "3:00pm - 4:00pm",
-    "4:00pm - 5:00pm",
-    "5:00pm - 6:00pm",
+    "12:00am - 1:00am (Today)",
+    "1:00am - 2:00am (Today)",
+    "2:00am - 3:00am (Today)",
+    "3:00am - 4:00am (Today)",
+    "4:00am - 5:00am (Today)",
+    "5:00am - 6:00am (Today)",
+    "6:00am - 7:00am (Today)",
+    "7:00am - 8:00am (Today)",
+    "8:00am - 9:00am (Today)",
+    "9:00am - 10:00am (Today)",
+    "10:00am - 11:00am (Today)",
+    "11:00am - 12:00pm (Today)",
+    "12:00pm - 1:00pm (Today)",
+    "1:00pm - 2:00pm (Today)",
+    "2:00pm - 3:00pm (Today)",
+    "3:00pm - 4:00pm (Today)",
+    "4:00pm - 5:00pm (Today)",
+    "5:00pm - 6:00pm (Today)",
+    "6:00pm - 7:00pm (Today)",
+    "7:00pm - 8:00pm (Today)",
+    "8:00pm - 9:00pm (Today)",
+    "9:00pm - 10:00pm (Today)",
+    "10:00pm - 11:00pm (Today)",
+    "11:00pm - 12:00am (Today)",
   ];
 
   return (
@@ -150,7 +189,6 @@ const SubmitDetails = () => {
       </div>
 
       <div className="relative z-10 bg-[#1E2D2B] p-8 shadow-lg bg-opacity-75">
-        {/* <h2 className="text-2xl font-bold text-[#05120d] mb-6 text-center">Submit Travel Details</h2> */}
         <form onSubmit={handleSubmitDetails} className="space-y-4">
           <div>
             <label
@@ -194,22 +232,25 @@ const SubmitDetails = () => {
             {dropLocation && `Selected Drop: ${dropLocation}`}
           </h2>
 
-          {/* <div>
-            <label htmlFor="time" className="block text-sm font-medium text-gray-300">Travel Time</label>
-            <input
-              id="time"
-              type="datetime-local"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              required
-              className="mt-1 block w-full px-3 py-2 bg-[#2A3F3D] border border-[#1E2D2B] rounded-md shadow-sm text-white focus:outline-none focus:ring-[#8AC9A7] focus:border-[#8AC9A7]"
+          <div className="">
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-gray-300"
+            >
+              Phone Number
+            </label>
+            <PhoneInput
+              className="!w-full bg-white flex-1"
+              defaultCountry="in"
+              value={phone}
+              onChange={(phone) => setPhone(phone)}
             />
-          </div> */}
+          </div>
 
-          <div>
+          <div className="!mt-10">
             <label
               htmlFor="timeSlot"
-              className="block text-sm font-medium text-gray-300"
+              className="block text-sm font-medium text-gray-300 mt-2"
             >
               Travel Time Slot
             </label>
@@ -219,37 +260,52 @@ const SubmitDetails = () => {
               onChange={(e) => setTimeSlot(e.target.value)}
               className="mt-1 block w-full px-3 py-2 bg-[#2A3F3D] border border-[#1E2D2B] rounded-md shadow-sm text-white focus:outline-none focus:ring-[#8AC9A7] focus:border-[#8AC9A7]"
             >
-              {timeSlots.map((slot) => (
-                <option key={slot} value={slot}>
+              <option value="">Select a time slot</option>
+              {timeSlots.map((slot, index) => (
+                <option key={index} value={slot}>
                   {slot}
                 </option>
               ))}
             </select>
           </div>
 
-          <div className="flex justify-center text-white font-bold">
-            <h2>OR</h2>
+          <div className="flex justify-center items-center">
+            <h2 className="-translate-y-2 pr-2 text-white">_____________</h2>
+            <h2 className="text-white font-bold text-lg">OR</h2>
+            <h2 className="-translate-y-2 pl-2 text-white">_____________</h2>
           </div>
 
-          <div>
-            <label
-              htmlFor="timeSlot"
-              className="block text-sm font-medium text-gray-300"
-            >
-              Select Date
-            </label>
+          <div className="flex justify-center">
+            <div>
+              <label
+                htmlFor="travelDate"
+                className="block text-sm font-medium text-gray-300 "
+              >
+                Travel Date
+              </label>
+              <DatePicker
+                selected={isDate(timeSlot) ? new Date(timeSlot) : null} // Check if `timeSlot` is a valid date
+                onChange={handleDateChange}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="Select a travel date"
+                className="mt-1 block w-full px-3 py-2 bg-[#2A3F3D] border border-[#1E2D2B] rounded-md shadow-sm text-white focus:outline-none focus:ring-[#8AC9A7] focus:border-[#8AC9A7]"
+              />
+            </div>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#8AC9A7] hover:bg-[#78B694] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8AC9A7]"
-            >
-              Submit Details
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full py-2 px-4 bg-[#15683c] text-[#ffffff] font-medium rounded-md shadow-sm hover:bg-[rgb(12,77,39)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8AC9A7] shadow-white transition"
+          >
+            Submit Details
+          </button>
         </form>
-        {message && <p className="text-sm text-green-500 mt-4">{message}</p>}
+
+        {message && (
+          <div className="mt-4 text-center">
+            <p className="text-sm text-yellow-300">{message}</p>
+          </div>
+        )}
       </div>
     </div>
   );
