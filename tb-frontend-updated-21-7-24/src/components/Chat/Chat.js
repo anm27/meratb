@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import io from "socket.io-client";
 import { AuthContext } from "../../context/AuthContext";
+import axios from "axios";
 // import { receiveMessage, removeReceiveMessageListener } from '../../socket';
 
 const socket = io(`${process.env.REACT_APP_SERVER_URI}`);
@@ -13,6 +14,23 @@ const Chat = ({ recipientId }) => {
   const [error, setError] = useState(null);
   const typingTimeoutRef = useRef(null);
   const notificationSound = useRef(new Audio("/notification.mp3"));
+
+  useEffect(() => {
+    const fetchChatHistory = async () => {
+      try {
+        const response = await axios.get(
+          `/chat/history/${user._id}/${recipientId}`
+        );
+        setMessages(response.data);
+      } catch (error) {
+        console.error("Error fetching chat history:", error);
+      }
+    };
+
+    if (user) {
+      fetchChatHistory();
+    }
+  }, [user, recipientId]);
 
   useEffect(() => {
     const audioElement = notificationSound.current;
@@ -76,7 +94,7 @@ const Chat = ({ recipientId }) => {
     }
   }, [user, recipientId]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     const token = localStorage.getItem("token");
     const newMessage = {
       text: message,
@@ -86,12 +104,20 @@ const Chat = ({ recipientId }) => {
     console.log("Sending message:", newMessage);
     socket.emit("sendMessage", { recipientId, message: message, token });
     // setMessages((prevMessages) => [...prevMessages, { text: message, sender: 'me' }]);
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { text: message, sender: user._id },
-    ]);
-    setMessage("");
-    handleTyping(false);
+    // setMessages((prevMessages) => [
+    //   ...prevMessages,
+    //   { text: message, sender: user._id },
+    // ]);
+    // setMessage("");
+    // handleTyping(false);
+    try {
+      await axios.post("/chat/sendMessage", newMessage);
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setMessage("");
+      handleTyping(false);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
 
   const handleTyping = (isTyping) => {
