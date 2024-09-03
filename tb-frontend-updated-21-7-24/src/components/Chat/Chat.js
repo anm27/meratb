@@ -15,22 +15,22 @@ const Chat = ({ recipientId }) => {
   const typingTimeoutRef = useRef(null);
   const notificationSound = useRef(new Audio("/notification.mp3"));
 
-  useEffect(() => {
-    const fetchChatHistory = async () => {
-      try {
-        const response = await axios.get(
-          `/chat/history/${user._id}/${recipientId}`
-        );
-        setMessages(response.data);
-      } catch (error) {
-        console.error("Error fetching chat history:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchChatHistory = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `/chat/history/${user._id}/${recipientId}`
+  //       );
+  //       setMessages(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching chat history:", error);
+  //     }
+  //   };
 
-    if (user) {
-      fetchChatHistory();
-    }
-  }, [user, recipientId]);
+  //   if (user) {
+  //     fetchChatHistory();
+  //   }
+  // }, [user, recipientId]);
 
   useEffect(() => {
     const audioElement = notificationSound.current;
