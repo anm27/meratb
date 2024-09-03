@@ -7,7 +7,7 @@ import io from "socket.io-client";
 import Header from "../components/Header/Header";
 
 import Modal from "../components/Modal/Modal";
-import axios from "axios";
+// import axios from "axios";
 
 const socket = io(`${process.env.REACT_APP_SERVER_URI}`);
 
@@ -192,23 +192,47 @@ const Dashboard = () => {
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
       >
-        <h2 className="text-white text-xl mb-4">All Users Travel Details</h2>
+        <h2 className="font-bold text-xl mb-4 text-purple-600">
+          All Users Travel Details :
+        </h2>
         {allTravelDetails.length === 0 ? (
           <p className="text-white">No travel details available.</p>
         ) : (
           <ul>
             {allTravelDetails.map((detail) => (
-              <li key={detail._id} className="text-white mb-2">
-                <strong>{detail.userId.username}</strong> wants to travel from{" "}
-                {detail.pickupLocation} to {detail.dropLocation} at{" "}
-                {detail.timeSlot}.
+              <div className="border-b-2 shadow-md pb-6 pt-6">
+                <li key={detail._id} className="text-white mb-2">
+                  <span className="uppercase font-bold">
+                    {detail.userId.username}
+                  </span>{" "}
+                  wants to travel from{" "}
+                  <span className="uppercase font-bold">
+                    {" "}
+                    {detail.pickupLocation}{" "}
+                  </span>{" "}
+                  <span className="text-2xl">➖</span>
+                  <span className="uppercase font-bold">
+                    {" "}
+                    {detail.dropLocation}{" "}
+                  </span>
+                  .
+                </li>
+
+                <li key={detail._id} className="text-white mb-2">
+                  Travelling on:{" "}
+                  <span className="uppercase font-bold">
+                    {" "}
+                    {detail.timeSlot}{" "}
+                  </span>
+                </li>
+
                 <button
-                  className="bg-green-600 hover:bg-green-800 text-white font-semibold py-1 px-3 ml-4"
+                  className="bg-green-600 hover:bg-green-800 text-white font-semibold py-1 px-3 flex justify-center w-full"
                   onClick={() => handleSendRequest(detail.userId._id)} // Send request on click
                 >
                   Send Request
                 </button>
-              </li>
+              </div>
             ))}
           </ul>
         )}
