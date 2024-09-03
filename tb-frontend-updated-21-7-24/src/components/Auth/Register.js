@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../Header/Header";
 
 const Register = () => {
@@ -92,6 +92,12 @@ const Register = () => {
               >
                 Register
               </button>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <h2 className="text-white">Already have an account?</h2>
+              <Link to="/login" className="text-blue-500 font-semibold">
+                Login Now!
+              </Link>
             </div>
           </form>
         </div>

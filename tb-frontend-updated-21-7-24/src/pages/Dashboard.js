@@ -201,17 +201,16 @@ const Dashboard = () => {
           <ul>
             {allTravelDetails.map((detail) => (
               <div className="border-b-2 shadow-md pb-6 pt-6">
-                <li key={detail._id} className="text-white mb-2">
+                <li key={detail._id} className="text-white mb-2 text-justify">
                   <span className="uppercase font-bold">
-                    {detail.userId.username}
+                    "{detail.userId.username}"
                   </span>{" "}
                   wants to travel from{" "}
-                  <span className="uppercase font-bold">
-                    {" "}
+                  <span className="uppercase font-bold text-yellow-400">
                     {detail.pickupLocation}{" "}
                   </span>{" "}
                   <span className="text-2xl">➖</span>
-                  <span className="uppercase font-bold">
+                  <span className="uppercase font-bold text-green-400">
                     {" "}
                     {detail.dropLocation}{" "}
                   </span>
@@ -220,14 +219,14 @@ const Dashboard = () => {
 
                 <li key={detail._id} className="text-white mb-2">
                   Travelling on:{" "}
-                  <span className="uppercase font-bold">
+                  <span className="uppercase font-bold text-blue-300">
                     {" "}
-                    {detail.timeSlot}{" "}
+                    "{detail.timeSlot}"
                   </span>
                 </li>
 
                 <button
-                  className="bg-green-600 hover:bg-green-800 text-white font-semibold py-1 px-3 flex justify-center w-full"
+                  className="bg-green-600 hover:bg-green-800 text-white font-semibold py-1 px-3 flex justify-center w-full rounded-md text-xl"
                   onClick={() => handleSendRequest(detail.userId._id)} // Send request on click
                 >
                   Send Request

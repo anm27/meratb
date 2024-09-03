@@ -137,19 +137,38 @@ const TravelRequests = ({
               >
                 <div>
                   <div className="tracking-wider">
-                    <p className="text-lg font-medium">
-                      Username: {user.userId.username} ({user.phone})
+                    <p className="text-lg font-medium mb-2">
+                      Username:{" "}
+                      <span className="text-purple-400 hover:text-blue-500">
+                        {user.userId.username}{" "}
+                        <a href={`tel:${user.phone}`} target="blank">
+                          ({user.phone})
+                        </a>
+                      </span>
                     </p>
                     <p className="text-sm">
-                      Going to travel from {user.pickupLocation} to{" "}
-                      {user.dropLocation}
+                      Going to travel from{" "}
+                      <span className="text-yellow-400">
+                        {" "}
+                        {user.pickupLocation}{" "}
+                      </span>{" "}
+                      ➖{" "}
+                      <span className="text-green-400">
+                        {" "}
+                        {user.dropLocation}{" "}
+                      </span>
                     </p>
-                    <p className="text-sm">"{user.timeSlot}"</p>
+                    <p className="text-sm mt-2">
+                      Travelling on:{" "}
+                      <span className="text-blue-300 font-semibold">
+                        "{user.timeSlot}"
+                      </span>
+                    </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setSelectedUser(user)}
-                  className="bg-[#8AC9A7] w-46 text-black px-4 py-2 mt-2 rounded-lg hover:bg-[#78B694] focus:outline-none"
+                  className="bg-[#2ace77] w-46 text-black px-4 py-2 mt-2 font-semibold text-xl rounded-lg hover:bg-[#45f293] focus:outline-none"
                 >
                   Send Travel Request
                 </button>

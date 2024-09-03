@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import Header from "../Header/Header";
 
@@ -81,6 +81,12 @@ const Login = () => {
               >
                 Login
               </button>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <h2 className="text-white">Don't have an account?</h2>
+              <Link to="/register" className="text-blue-500 font-semibold">
+                Register here...
+              </Link>
             </div>
           </form>
         </div>

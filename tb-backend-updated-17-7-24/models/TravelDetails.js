@@ -29,7 +29,7 @@ const TravelDetailsSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: "1h", // This will ensure the document is automatically deleted after 1 hour
+    // expires: "1h", // This will ensure the document is automatically deleted after 1 hour
   },
 });
 

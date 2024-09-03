@@ -72,7 +72,7 @@ io.on("connection", (socket) => {
         { userId: { $in: [recipientId, senderId] } },
         {
           matchedAt: new Date(),
-          expireAt: new Date(Date.now() + 2 * 60 * 60 * 1000),
+          // expireAt: new Date(Date.now() + 2 * 60 * 60 * 1000),
         } // Set expireAt to 2 hours from now
       );
 
@@ -121,16 +121,16 @@ io.on("connection", (socket) => {
 });
 
 // Function and interval to delete expired matched travel details
-const deleteExpiredMatchedTravelDetails = async () => {
-  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
-  try {
-    await TravelDetails.deleteMany({ matchedAt: { $lte: twoHoursAgo } });
-    console.log("Deleted travel details matched over 2 hours ago");
-  } catch (err) {
-    console.error("Error deleting expired matched travel details:", err);
-  }
-};
+// const deleteExpiredMatchedTravelDetails = async () => {
+//   const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+//   try {
+//     await TravelDetails.deleteMany({ matchedAt: { $lte: twoHoursAgo } });
+//     console.log("Deleted travel details matched over 2 hours ago");
+//   } catch (err) {
+//     console.error("Error deleting expired matched travel details:", err);
+//   }
+// };
 
-setInterval(deleteExpiredMatchedTravelDetails, 3600000); // Run every hour
+// setInterval(deleteExpiredMatchedTravelDetails, 3600000); // Run every hour
 
 server.listen(4000, () => console.log("Server is running on port 4000"));
