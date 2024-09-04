@@ -7,11 +7,32 @@ import io from "socket.io-client";
 import Header from "../components/Header/Header";
 
 import Modal from "../components/Modal/Modal";
+import { useLocation } from "react-router-dom";
+import VideoModal from "../components/Modal/VideoModal";
 // import axios from "axios";
 
 const socket = io(`${process.env.REACT_APP_SERVER_URI}`);
 
 const Dashboard = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Prevent the back button from navigating away
+    window.history.pushState(null, null, location.pathname);
+
+    const handlePopState = (event) => {
+      // Prevent navigation on back button press by pushing the same state again
+      window.history.pushState(null, null, location.pathname);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [location.pathname]);
+
   const matchedUsersRef = useRef(null);
   const travelRequestsRef = useRef(null);
 
@@ -25,6 +46,12 @@ const Dashboard = () => {
   const [travelRequestCount, setTravelRequestCount] = useState(0);
 
   const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   const [allTravelDetails, setAllTravelDetails] = useState([]);
 
   const scrollToMatchedUsers = () => {
@@ -150,9 +177,27 @@ const Dashboard = () => {
         with matched travelers today!
       </h1>
 
-      <button className="text-center w-full underline text-blue-300 cursor-pointer mt-2">
+      <button
+        className="text-center w-full underline text-blue-300 cursor-pointer mt-2"
+        onClick={openModal}
+      >
         See how it works. (DEMO OF APP)
       </button>
+
+      <VideoModal isOpen={isModalOpen} onClose={closeModal}>
+        <div className="relative pt-[56.25%]">
+          {" "}
+          {/* Aspect ratio 16:9 */}
+          <iframe
+            className="absolute top-0 left-0 w-full h-full"
+            src="https://www.youtube.com/embed/IqohwyAjCx4"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            title="Demo Video"
+          />
+        </div>
+      </VideoModal>
 
       <SubmitDetails />
 
